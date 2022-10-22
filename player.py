@@ -1,10 +1,9 @@
-from typing import TypedDict
+import typing
 
 import pygame
-from pygame import Surface
+from pygame.surface import Surface
 
-
-class MoveFlag(TypedDict):
+class MoveFlag(typing.TypedDict):
     right: bool
     left: bool
     up: bool
@@ -14,7 +13,7 @@ class MoveFlag(TypedDict):
 class Player:
     def __init__(self, screen: Surface):
         self.screen = screen
-        self.screen_size = self.screen.get_size()
+        self.screen_size = self.screen.get_rect()
 
         self.standing_images = tuple(
             pygame.image.load(f"./resource/standing/play_atti_standing_{i}.png") for i in range(4)
@@ -26,7 +25,7 @@ class Player:
             pygame.image.load(f"./resource/attack/play_atti_attack0_{i}.png") for i in range(9)
         )
 
-        self.player_size = self.standing_images[0].get_size()
+        self.size = self.standing_images[0].get_rect()
         self.x = 250
         self.y = 300
 
@@ -53,13 +52,13 @@ class Player:
             self.screen.blit(self.standing_images[self.standing_count // self.image_per_frame], (self.x, self.y))
 
     def update(self):
-        if self.move_flag['right'] and self.x < self.screen_size[0] - self.player_size[0]:
+        if self.move_flag['right'] and self.x < self.screen_size.width - self.size.width:
             self.x += 2
         if self.move_flag['left'] and self.x > 0:
             self.x -= 2
         if self.move_flag['up'] and self.y > 0:
             self.y -= 2
-        if self.move_flag['down'] and self.y < self.screen_size[1] - self.player_size[1]:
+        if self.move_flag['down'] and self.y < self.screen_size.height - self.size.height:
             self.y += 2
 
     def animation(self):

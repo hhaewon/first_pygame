@@ -4,6 +4,7 @@ from background import Background
 from boss import Boss
 from player import Player
 from enemy import Enemy
+from missile import Missile
 
 pygame.init()
 
@@ -12,8 +13,9 @@ pygame.display.set_caption("myFirst Game")
 
 background = Background(screen=screen)
 player = Player(screen=screen)
-enemies = tuple(Enemy(screen=screen) for _ in range(10))
+enemies = [Enemy(screen=screen) for _ in range(10)]
 boss = Boss(screen=screen)
+missile = Missile(screen=screen, boss=boss, enemies=enemies)
 
 is_running = True
 while is_running:
@@ -21,8 +23,14 @@ while is_running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
                 is_running = False
-            if event.key == pygame.K_a:
+
+            if event.key == pygame.K_d:
                 player.is_attack = True
+            if event.key == pygame.K_s:
+                missile.positions1.append([player.x, player.y])
+            if event.key == pygame.K_a:
+
+                missile.positions2.append([player.x, player.y])
             if event.key == pygame.K_RIGHT:
                 player.move_flag['right'] = True
             if event.key == pygame.K_LEFT:
@@ -46,12 +54,20 @@ while is_running:
 
     background.draw()
     background.update()
+
     player.draw()
     player.update()
     player.animation()
+
     for enemy in enemies:
         enemy.draw()
         enemy.update()
+
     boss.draw()
+    boss.update()
     boss.animation()
+
+    missile.draw()
+    missile.update()
+
     pygame.display.update()
